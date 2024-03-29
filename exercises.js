@@ -7,11 +7,27 @@ const postExercise = (req, res) => {
       const durationNumber = parseInt(req.body.duration);
   
       // Check for required fields
-      if (!userId || !description || !duration) {
+      if (!userId) {
         return res.status(400).json({
           status: 400,
           success: false,
-          error: "Some required param is missing",
+          error: "User id is missing. Please provide valid user id.",
+        });
+      }
+
+      if (!description) {
+        return res.status(400).json({
+          status: 400,
+          success: false,
+          error: "Description param is missing. Please provide valid exercise description.",
+        });
+      }
+
+      if (!duration) {
+        return res.status(400).json({
+          status: 400,
+          success: false,
+          error: "Duration param is missing. Please provide valid exercise duration.",
         });
       }
   
@@ -35,16 +51,16 @@ const postExercise = (req, res) => {
         }
 
         // Check if duration is greater than zero
-        if (durationNumber <= 0) {
+        if (!durationNumber || durationNumber <= 0) {
           return res.status(400).json({
             status: 400,
             success: false,
-            error: "Duration must be a greater than zero",
+            error: "Duration must be a number greater than zero.",
           });
         }
 
         // Date validation
-        const dateFormat = /^\d{4}-\d{2}-\d{2}$/;
+        const dateFormat = /^(?:\d{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/;
         let exerciseDate = date ? date : new Date().toISOString().slice(0, 10);
 
         if (!dateFormat.test(exerciseDate)) {
