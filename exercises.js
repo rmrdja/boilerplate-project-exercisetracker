@@ -60,10 +60,9 @@ const postExercise = (req, res) => {
         }
 
         // Date validation
-        const dateFormat = /^(?:\d{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/;
         let exerciseDate = date ? date : new Date().toISOString().slice(0, 10);
 
-        if (!dateFormat.test(exerciseDate)) {
+        if (!isValidDate(exerciseDate)) {
           return res.status(400).json({
             status: 400,
             success: false,
@@ -252,6 +251,19 @@ const getLogs = (req, res) => {
     });
   }
 };
+
+const isValidDate = (date) => {
+  const dateSplited = date.split('-');
+  const year = parseInt(dateSplited[0], 10);
+  const month = parseInt(dateSplited[1], 10);
+  const day = parseInt(dateSplited[2], 10);
+
+  const isValidYear = year >= 1000 && year <= 9999;
+  const isValidMonth = month >= 1 && month <= 12;
+  const isValidDay = day >= 1 && day <= new Date(year, month, 0).getDate();
+
+  return isValidYear && isValidMonth && isValidDay;
+}
 
 module.exports = {
   postExercise,
